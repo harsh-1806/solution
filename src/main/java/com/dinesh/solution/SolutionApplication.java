@@ -45,15 +45,17 @@ public class SolutionApplication implements CommandLineRunner {
             System.out.println("Access Token: " + accessToken);
 
 
-            String regNo = requestBody.get("regNo");
-            int lastTwoDigits = Integer.parseInt(regNo.replaceAll("\\D+", "")) % 100;
-
-            String finalQuery;
-            if (lastTwoDigits % 2 == 1) {
-                finalQuery = "SELECT * FROM your_table WHERE condition = 'Q1';";
-            } else {
-                finalQuery = "SELECT * FROM your_table WHERE condition = 'Q2';";
-            }
+            String finalQuery =
+                    "SELECT p.AMOUNT AS SALARY, " +
+                            "CONCAT(e.FIRST_NAME, ' ', e.LAST_NAME) AS NAME, " +
+                            "TIMESTAMPDIFF(YEAR, e.DOB, CURDATE()) AS AGE, " +
+                            "d.DEPARTMENT_NAME " +
+                            "FROM PAYMENTS p " +
+                            "JOIN EMPLOYEE e ON p.EMP_ID = e.EMP_ID " +
+                            "JOIN DEPARTMENT d ON e.DEPARTMENT = d.DEPARTMENT_ID " +
+                            "WHERE DAY(p.PAYMENT_TIME) <> 1 " +
+                            "ORDER BY p.AMOUNT DESC " +
+                            "LIMIT 1;";
 
 
             Map<String, String> finalRequest = new HashMap<>();
